@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.Design;
 using System.Linq;
+using System.Net.NetworkInformation;
 using System.Runtime.Remoting.Messaging;
 using System.Text;
 using System.Threading.Tasks;
@@ -9,17 +11,34 @@ namespace NumerosRomanos
 {
     public class Conversor
     {
+        
         public int Converter(string numeroRomano)
         {
-            var numeroIndoArabico   = 0;
-            var quantidadeV         = 0;
-            var quantidadeL         = 0;
-            var quantidadeD         = 0;
-            var quantidadeI         = 0;
-            var quantidadeX         = 0;
-
-            foreach (var letra in numeroRomano)
+            var valorLetra = new Dictionary<char, int>
             {
+                {'I',1},
+                {'V',5},
+                {'X',10},
+                {'L',50},
+                {'C',100},
+                {'D',500},
+                {'M',1000},
+            };
+
+            var numeroIndoArabicoLetra = valorLetra['I'];
+            
+            var numeroIndoArabico = 0;
+            var quantidadeV = 0;
+            var quantidadeL = 0;
+            var quantidadeD = 0;
+            var quantidadeI = 0;
+            var quantidadeX = 0;
+            var ultimoNumeroIndoArabico = 0;
+
+            for (int i = numeroRomano.Length - 1; i >= 0; i--)
+            {
+                var letra = numeroRomano[i];
+
                 switch (letra)
                 {
                     case 'V':
@@ -38,7 +57,16 @@ namespace NumerosRomanos
                         quantidadeX++;
                         break;
                 }
-                numeroIndoArabico += ObterValorLetra(letra);
+
+                var numeroRepresentaLetra = ObterValorLetra(letra);
+
+                if (numeroRepresentaLetra < ultimoNumeroIndoArabico)
+                    numeroIndoArabico -= numeroRepresentaLetra;
+                else
+                    numeroIndoArabico += numeroRepresentaLetra;
+                
+                ultimoNumeroIndoArabico = numeroRepresentaLetra;
+
             }
 
             if (quantidadeV > 1)
@@ -80,6 +108,7 @@ namespace NumerosRomanos
                 default:
                     return 0;
             }
+
         }
 
     }

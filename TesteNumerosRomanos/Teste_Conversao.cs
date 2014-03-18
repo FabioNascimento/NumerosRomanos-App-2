@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 using NumerosRomanos;
@@ -112,7 +113,37 @@ namespace TesteNumerosRomanos
             Assert.DoesNotThrow(() => conversao.Converter("XXX"));
         }
 
-        
+        [Test]
+        [TestCase("VIII", 8)]
+        [TestCase("LXII", 62)]
+        [TestCase("CLVIII", 158)]
+        [TestCase("MCXX", 1120)]
+        public void Somar_I_X_C_Quando_localizado_a_direita_dos_demais_algarismos(string letraAgrupada, int resultadoEsperado)
+        {
+            //Arrange
+            var conversao = new Conversor();
+            //Act
+            var resultadoSoma = conversao.Converter(letraAgrupada);
+            //Assert
+            Assert.AreEqual(resultadoEsperado, resultadoSoma);
+        }
+
+
+        [Test]
+        [TestCase("IV", 4)]
+        [TestCase("IX", 9)]
+        [TestCase("XC", 90)]
+        [TestCase("MCCCLIV", 1354)]
+        [TestCase("MMMCCCXXVIII", 3328)]
+
+        public void Subtrair_I_X_C_Quando_Estiverem_a_Esquerda_dos_Algarismos(string letraAgrupada, int resultadoEsperado)
+        {
+            var conversao = new Conversor();
+
+            var resultadoConvertido = conversao.Converter(letraAgrupada);
+
+            Assert.AreEqual(resultadoEsperado, resultadoConvertido);
+        }
 
     }
 }
